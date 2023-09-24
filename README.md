@@ -1,6 +1,6 @@
 # InventoryBackup Minecraft Server Plugin
 
-![Minecraft Logo](https://www.minecraft.net/etc.clientlibs/minecraft/clientlibs/main/resources/img/header/logo.png)
+![Minecraft Logo](minecraft_logo.png)
 
 InventoryBackup is a Minecraft server plugin designed to backup and restore player inventories on death or on demand. This plugin allows server administrators to easily manage and recover player inventories, providing a more seamless and enjoyable gameplay experience.
 
