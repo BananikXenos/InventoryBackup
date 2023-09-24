@@ -1,0 +1,4 @@
+name: InventoryBackup
+version: '1.0'
+main: com.synsenetwork.inventorybackup.InventoryBackup
+api-version: '1.20'

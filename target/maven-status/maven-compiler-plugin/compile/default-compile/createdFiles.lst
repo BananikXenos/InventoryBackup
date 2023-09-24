@@ -1,0 +1,6 @@
+com\synsenetwork\inventorybackup\listeners\EventListener.class
+com\synsenetwork\inventorybackup\data\ItemSerialization.class
+com\synsenetwork\inventorybackup\utils\TimeUtils.class
+com\synsenetwork\inventorybackup\data\BackupInventory.class
+com\synsenetwork\inventorybackup\InventoryBackup.class
+com\synsenetwork\inventorybackup\gson\ItemStackArrayTypeAdapter.class

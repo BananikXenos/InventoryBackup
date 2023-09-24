@@ -1,0 +1,4 @@
+name: InventoryBackup
+version: '${project.version}'
+main: com.synsenetwork.inventorybackup.InventoryBackup
+api-version: '1.20'
