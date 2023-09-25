@@ -31,7 +31,7 @@ public final class InventoryBackup extends JavaPlugin {
     @Override
     public void onLoad() {
         // Register commands api
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).verboseOutput(true));
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).silentLogs(true));
     }
 
     @Override
