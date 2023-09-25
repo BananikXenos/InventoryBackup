@@ -3,6 +3,7 @@ package com.synsenetwork.inventorybackup.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synsenetwork.inventorybackup.gson.ItemStackArrayTypeAdapter;
+import com.synsenetwork.inventorybackup.utils.Experience;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.dizitart.no2.Document;
@@ -65,7 +66,7 @@ public class BackupInventory implements Mappable {
                 player.getInventory().getArmorContents(),
                 player.getInventory().getExtraContents(),
                 player.getInventory().getContents(),
-                player.getTotalExperience());
+                Experience.getExp(player));
     }
 
     /**
@@ -76,7 +77,7 @@ public class BackupInventory implements Mappable {
         player.getInventory().setArmorContents(armorContents);
         player.getInventory().setExtraContents(extraContents);
         player.getInventory().setContents(contents);
-        player.setTotalExperience(totalExperience);
+        Experience.changeExp(player, Experience.getExp(player));
     }
 
     public ItemStack[] getArmorContents() {
