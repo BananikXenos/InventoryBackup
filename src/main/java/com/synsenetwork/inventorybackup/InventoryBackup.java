@@ -145,22 +145,7 @@ public final class InventoryBackup extends JavaPlugin {
             String id = args.get("id") == null ? "latest" : (String) args.get("id");
 
             // Get backup inventory
-            BackupInventory backupInventory = null;
-
-            // Get backup inventory
-            if (id.equals("latest")) {
-                // Load player's backup inventories
-                Iterable<BackupInventory> playerBackups = repository.find(ObjectFilters.eq("playerId", target.getUniqueId()));
-                for (BackupInventory currentBackupInventory : playerBackups) {
-                    if (backupInventory == null || currentBackupInventory.getTimestamp() > backupInventory.getTimestamp()) {
-                        backupInventory = currentBackupInventory;
-                    }
-                }
-            } else {
-                // Get backup inventory
-                NitriteId nitriteId = NitriteId.createId(Long.parseLong(id));
-                backupInventory = repository.getById(nitriteId);
-            }
+            BackupInventory backupInventory = getBackupInventory(target, id);
 
             // Check if backup inventory exists
             if (backupInventory == null) {
@@ -220,22 +205,7 @@ public final class InventoryBackup extends JavaPlugin {
             String id = args.get("id") == null ? "latest" : (String) args.get("id");
 
             // Get backup inventory
-            BackupInventory backupInventory = null;
-
-            // Get backup inventory
-            if (id.equals("latest")) {
-                // Load player's backup inventories
-                Iterable<BackupInventory> playerBackups = repository.find(ObjectFilters.eq("playerId", target.getUniqueId()));
-                for (BackupInventory currentBackupInventory : playerBackups) {
-                    if (backupInventory == null || currentBackupInventory.getTimestamp() > backupInventory.getTimestamp()) {
-                        backupInventory = currentBackupInventory;
-                    }
-                }
-            } else {
-                // Get backup inventory
-                NitriteId nitriteId = NitriteId.createId(Long.parseLong(id));
-                backupInventory = repository.getById(nitriteId);
-            }
+            BackupInventory backupInventory = getBackupInventory(target, id);
 
             // Check if backup inventory exists
             if (backupInventory == null) {
@@ -273,5 +243,32 @@ public final class InventoryBackup extends JavaPlugin {
 
         // Close database
         db.close();
+    }
+
+    /**
+     * Get backup inventory by ID
+     *
+     * @param target Target player
+     * @param id     Backup inventory ID
+     * @return Backup inventory
+     */
+    private BackupInventory getBackupInventory(Player target, String id) {
+        BackupInventory backupInventory = null;
+
+        if (id.equals("latest")) {
+            // Load player's backup inventories
+            Iterable<BackupInventory> playerBackups = repository.find(ObjectFilters.eq("playerId", target.getUniqueId()));
+            for (BackupInventory currentBackupInventory : playerBackups) {
+                if (backupInventory == null || currentBackupInventory.getTimestamp() > backupInventory.getTimestamp()) {
+                    backupInventory = currentBackupInventory;
+                }
+            }
+        } else {
+            // Get backup inventory by ID
+            NitriteId nitriteId = NitriteId.createId(Long.parseLong(id));
+            backupInventory = repository.getById(nitriteId);
+        }
+
+        return backupInventory;
     }
 }
