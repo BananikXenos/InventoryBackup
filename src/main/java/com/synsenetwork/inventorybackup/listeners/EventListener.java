@@ -7,7 +7,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.dizitart.no2.objects.ObjectRepository;
 
+import java.util.logging.Logger;
+
 public class EventListener implements Listener {
+    // Logger
+    private final Logger logger = Logger.getLogger(EventListener.class.getName());
     private final ObjectRepository<BackupInventory> repository;
 
     public EventListener(ObjectRepository<BackupInventory> repository) {
@@ -24,5 +28,8 @@ public class EventListener implements Listener {
 
         // Insert backup inventory into database
         repository.insert(backupInventory);
+
+        // Log backup inventory creation
+        logger.info("Created backup inventory on death for player " + player.getName() + " with id " + backupInventory.getIdField().getIdValue().longValue() + ".");
     }
 }

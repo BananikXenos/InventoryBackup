@@ -22,36 +22,65 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
 public final class InventoryBackup extends JavaPlugin {
+    // Logger
+    private static final Logger LOGGER = Logger.getLogger(InventoryBackup.class.getName());
+
     // Database
     private Nitrite db;
     private ObjectRepository<BackupInventory> repository;
 
     @Override
     public void onLoad() {
+        // Log command api loading
+        LOGGER.info("Loading CommandAPI...");
+
         // Register commands api
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this).silentLogs(true));
     }
 
     @Override
     public void onEnable() {
+        // Log command api enabling
+        LOGGER.info("Enabling CommandAPI...");
+
         // Register commands api
         CommandAPI.onEnable();
 
         // Create data folder if it doesn't exist
         if (!getDataFolder().exists()) {
+            // Log data folder creation
+            LOGGER.info("Creating data folder at " + getDataFolder().getAbsolutePath() + "...");
+
+            // Create data folder
             getDataFolder().mkdir();
         }
 
+        // Get database file
+        File databaseFile = new File(getDataFolder(), "inventory.db");
+
+        // Log database loading
+        LOGGER.info("Loading database at " + databaseFile.getAbsolutePath() + "...");
+
         // Create database
-        db = Nitrite.builder().compressed().filePath(new File(getDataFolder(), "inventory.db").getAbsolutePath()).openOrCreate();
+        db = Nitrite.builder().compressed().filePath(databaseFile.getAbsolutePath()).openOrCreate();
+
+        // Log repository loading
+        LOGGER.info("Loading repository...");
 
         // Create repository
         repository = db.getRepository(BackupInventory.class);
 
+        // Log event listener registration
+        LOGGER.info("Registering event listener...");
+
         // Register event listener
         getServer().getPluginManager().registerEvents(new EventListener(repository), this);
+
+        // Log command registration
+        LOGGER.info("Registering commands...");
 
         // Register commands
         new CommandAPICommand("inventorybackup").withAliases("invbackup", "backupinventory").withSubcommand(new CommandAPICommand("list").withOptionalArguments(new PlayerArgument("player")).executesPlayer((player, args) -> {
@@ -83,6 +112,9 @@ public final class InventoryBackup extends JavaPlugin {
 
             // Add backup inventory to player's backup inventories
             repository.insert(backupInventory);
+
+            // Log backup inventory creation
+            LOGGER.info("Created backup inventory on demand for " + target.getName() + ". ID: " + backupInventory.getIdField().getIdValue().longValue());
 
             // Send message
             player.sendMessage(ChatColor.GOLD + "Successfully backed up " + target.getName() + "'s inventory. ID: " + backupInventory.getIdField());
@@ -139,6 +171,9 @@ public final class InventoryBackup extends JavaPlugin {
             // Restore backup inventory
             backupInventory.restore(target);
 
+            // Log backup inventory restoration
+            LOGGER.info("Restored backup inventory for " + target.getName() + ". ID: " + backupInventory.getIdField().getIdValue().longValue());
+
             // Send message
             player.sendMessage(ChatColor.GOLD + "Successfully restored " + target.getName() + "'s inventory. ID: " + backupInventory.getTimestamp());
         })).withSubcommand(new CommandAPICommand("purge").withOptionalArguments(new PlayerArgument("player")).executesPlayer((player, args) -> {
@@ -152,6 +187,9 @@ public final class InventoryBackup extends JavaPlugin {
             for (BackupInventory backupInventory : playerBackups) {
                 repository.remove(backupInventory);
             }
+
+            // Log backup inventory purging
+            LOGGER.info("Purged backup inventories for " + target.getName() + ".");
 
             // Send message
             player.sendMessage(ChatColor.GOLD + "Successfully purged " + target.getName() + "'s backup inventories.");
@@ -208,6 +246,9 @@ public final class InventoryBackup extends JavaPlugin {
             // Delete backup inventory
             repository.remove(backupInventory);
 
+            // Log backup inventory deletion
+            LOGGER.info("Deleted backup inventory for " + target.getName() + ". ID: " + backupInventory.getIdField().getIdValue().longValue());
+
             // Send message
             player.sendMessage(ChatColor.GOLD + "Successfully removed " + target.getName() + "'s inventory. ID: " + backupInventory.getTimestamp());
         })).register();
@@ -215,11 +256,20 @@ public final class InventoryBackup extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Log command api disabling
+        LOGGER.info("Disabling CommandAPI...");
+
         // Unregister commands api
         CommandAPI.onDisable();
 
+        // Log event listener unregistration
+        LOGGER.info("Unregistering event listener...");
+
         // Unregister event listener
         HandlerList.unregisterAll(this);
+
+        // Log database closing
+        LOGGER.info("Closing database...");
 
         // Close database
         db.close();
