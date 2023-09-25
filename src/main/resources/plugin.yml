@@ -1,4 +1,7 @@
 name: InventoryBackup
 version: '${project.version}'
+description: A handy plugin to backup player inventories
+author: Synse
+website: https://synsenetwork.com
 main: com.synsenetwork.inventorybackup.InventoryBackup
 api-version: '1.20'

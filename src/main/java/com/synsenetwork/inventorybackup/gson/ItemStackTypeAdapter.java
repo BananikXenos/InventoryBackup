@@ -13,21 +13,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * This class is used to serialize and deserialize ItemStack arrays.
- * It is used by Gson to convert ItemStack arrays to and from JSON.
+ * This class is used to serialize and deserialize ItemStacks.
+ * It is used by Gson to convert ItemStacks to and from JSON.
  */
-public class ItemStackArrayTypeAdapter extends TypeAdapter<ItemStack[]> {
+public class ItemStackTypeAdapter extends TypeAdapter<ItemStack> {
 
     /**
-     * This method is used to serialize an ItemStack array to JSON.
+     * This method is used to serialize an ItemStack to JSON.
      * @param out The JSON writer
-     * @param itemStackArray The ItemStack array to serialize
+     * @param itemStack The ItemStack to serialize
      * @throws IOException If an error occurs while writing to the JSON
      */
     @Override
-    public void write(JsonWriter out, ItemStack[] itemStackArray) throws IOException {
-        // If the ItemStack array is null, write a null value to the JSON
-        if (itemStackArray == null) {
+    public void write(JsonWriter out, ItemStack itemStack) throws IOException {
+        // If the ItemStack is null, write a null value to the JSON
+        if (itemStack == null) {
             out.nullValue();
             return;
         }
@@ -36,13 +36,8 @@ public class ItemStackArrayTypeAdapter extends TypeAdapter<ItemStack[]> {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
 
-        // Write the size of the array to the output stream
-        dataOutput.writeInt(itemStackArray.length);
-
-        // Write each item in the array to the output stream
-        for (ItemStack itemStack : itemStackArray) {
-            dataOutput.writeObject(itemStack);
-        }
+        // Write the ItemStack to the output stream
+        dataOutput.writeObject(itemStack);
 
         // Close the object output stream
         dataOutput.close();
@@ -55,14 +50,14 @@ public class ItemStackArrayTypeAdapter extends TypeAdapter<ItemStack[]> {
     }
 
     /**
-     * This method is used to deserialize an ItemStack array from JSON.
+     * This method is used to deserialize an ItemStack from JSON.
      * @param in The JSON reader
-     * @return The deserialized ItemStack array
+     * @return The deserialized ItemStack
      * @throws IOException If an error occurs while reading from the JSON
      */
     @Override
-    public ItemStack[] read(JsonReader in) throws IOException {
-        // Read the base64 encoded string from the JSON
+    public ItemStack read(JsonReader in) throws IOException {
+        // Read the Base64 string from the JSON
         String base64 = in.nextString();
 
         // If the Base64 string is null or empty, return null
@@ -75,22 +70,17 @@ public class ItemStackArrayTypeAdapter extends TypeAdapter<ItemStack[]> {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(base64));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
 
-            // Create a new ItemStack array
-            ItemStack[] items = new ItemStack[dataInput.readInt()];
-
-            // Read each item from the input stream
-            for (int i = 0; i < items.length; i++) {
-                items[i] = (ItemStack) dataInput.readObject();
-            }
+            // Read the ItemStack from the input stream
+            ItemStack itemStack = (ItemStack) dataInput.readObject();
 
             // Close the object input stream
             dataInput.close();
 
-            // Return the ItemStack array
-            return items;
-        }catch (ClassNotFoundException e) {
+            // Return the ItemStack
+            return itemStack;
+        } catch (ClassNotFoundException e) {
             // If the ItemStack class cannot be found, throw an IOException
-            throw new IOException("Unable to decode ItemStack array.", e);
+            throw new IOException("Unable to decode ItemStack.", e);
         }
     }
 }

@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * A utility class for working with timestamps.
+ */
 public class TimeUtils {
     /**
      * Formats a timestamp to a string.

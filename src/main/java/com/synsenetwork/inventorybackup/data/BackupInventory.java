@@ -3,6 +3,7 @@ package com.synsenetwork.inventorybackup.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synsenetwork.inventorybackup.gson.ItemStackArrayTypeAdapter;
+import com.synsenetwork.inventorybackup.gson.ItemStackTypeAdapter;
 import com.synsenetwork.inventorybackup.utils.Experience;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,6 +18,9 @@ import org.dizitart.no2.objects.Indices;
 
 import java.util.UUID;
 
+/**
+ * Represents a backup of a player's inventory.
+ */
 @Indices({
         @Index(value = "playerId", type = IndexType.NonUnique),
         @Index(value = "timestamp", type = IndexType.Unique)
@@ -31,17 +35,20 @@ public class BackupInventory implements Mappable {
     private ItemStack[] contents;
     private int totalExperience;
 
+    // Gson instance
     private static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(ItemStack.class, new ItemStackTypeAdapter())
             .registerTypeAdapter(ItemStack[].class, new ItemStackArrayTypeAdapter())
             .create();
 
     /**
      * Creates a new BackupInventory object.
-     * @param playerId The UUID of the player.
-     * @param timestamp The timestamp of when the inventory was backed up.
-     * @param armorContents The armor contents of the player.
-     * @param extraContents The extra contents of the player.
-     * @param contents The contents of the player.
+     *
+     * @param playerId        The UUID of the player.
+     * @param timestamp       The timestamp of when the inventory was backed up.
+     * @param armorContents   The armor contents of the player.
+     * @param extraContents   The extra contents of the player.
+     * @param contents        The contents of the player.
      * @param totalExperience The total experience of the player.
      */
     private BackupInventory(UUID playerId, long timestamp, ItemStack[] armorContents, ItemStack[] extraContents, ItemStack[] contents, int totalExperience) {
@@ -56,6 +63,7 @@ public class BackupInventory implements Mappable {
 
     /**
      * Creates a new BackupInventory object from a player's inventory.
+     *
      * @param player The player to create the BackupInventory object from.
      * @return A new BackupInventory object.
      */
@@ -71,6 +79,7 @@ public class BackupInventory implements Mappable {
 
     /**
      * Restores the inventory to the player.
+     *
      * @param player The player to restore the inventory to.
      */
     public void restore(Player player) {
@@ -80,34 +89,76 @@ public class BackupInventory implements Mappable {
         Experience.changeExp(player, Experience.getExp(player));
     }
 
+
+    /**
+     * Gets the armor contents of the player.
+     *
+     * @return The armor contents of the player.
+     */
     public ItemStack[] getArmorContents() {
         return armorContents;
     }
 
+    /**
+     * Gets the extra contents of the player.
+     *
+     * @return The extra contents of the player.
+     */
     public ItemStack[] getExtraContents() {
         return extraContents;
     }
 
+    /**
+     * Gets the contents of the player.
+     *
+     * @return The contents of the player.
+     */
     public ItemStack[] getContents() {
         return contents;
     }
 
+    /**
+     * Gets the UUID of the player.
+     *
+     * @return The UUID of the player.
+     */
     public UUID getPlayerId() {
         return playerId;
     }
 
+    /**
+     * Gets the total experience of the player.
+     *
+     * @return The total experience of the player.
+     */
     public int getTotalExperience() {
         return totalExperience;
     }
 
+    /**
+     * Gets the timestamp of when the inventory was backed up.
+     *
+     * @return The timestamp of when the inventory was backed up.
+     */
     public long getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Gets the id field of the object.
+     *
+     * @return The id field of the object.
+     */
     public NitriteId getIdField() {
         return idField;
     }
 
+    /**
+     * Writes the object to a document.
+     *
+     * @param mapper The NitriteMapper instance.
+     * @return The document to write the object to.
+     */
     @Override
     public Document write(NitriteMapper mapper) {
         Document document = new Document();
@@ -120,6 +171,12 @@ public class BackupInventory implements Mappable {
         return document;
     }
 
+    /**
+     * Reads the object from a document.
+     *
+     * @param mapper   The NitriteMapper instance.
+     * @param document The document to read the object from.
+     */
     @Override
     public void read(NitriteMapper mapper, Document document) {
         this.idField = NitriteId.createId(document.get("idField", Long.class));

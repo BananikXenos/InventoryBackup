@@ -9,6 +9,9 @@ import org.dizitart.no2.objects.ObjectRepository;
 
 import java.util.logging.Logger;
 
+/**
+ * A listener for events related to the creation of backup inventories.
+ */
 public class EventListener implements Listener {
     // Logger
     private final Logger logger = Logger.getLogger(EventListener.class.getName());
@@ -18,6 +21,11 @@ public class EventListener implements Listener {
         this.repository = repository;
     }
 
+    /**
+     * Creates a backup inventory when a player dies.
+     *
+     * @param event The event.
+     */
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         // Get player

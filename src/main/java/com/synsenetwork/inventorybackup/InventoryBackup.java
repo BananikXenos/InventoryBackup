@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
+/**
+ * InventoryBackup main class
+ */
 public final class InventoryBackup extends JavaPlugin {
     // Logger
     private static final Logger LOGGER = Logger.getLogger(InventoryBackup.class.getName());
